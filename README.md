@@ -159,12 +159,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 If you find MuleMind useful, give us a star ⭐ on GitHub!
 
-## 📞 Support
-
-- 🐛 [Report Issues](https://github.com/yourusername/mulemind-connector/issues)
-- 💬 [Discussions](https://github.com/yourusername/mulemind-connector/discussions)
-- 📧 Email: support@mulemind.dev
-
 ---
 
 **MuleMind** - Think faster, integrate smarter. 🧠⚡
