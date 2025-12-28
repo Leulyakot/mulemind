@@ -1,0 +1,17 @@
+{
+  "name": "MuleMind Connector",
+  "description": "Lightning-fast LLM integration for MuleSoft",
+  "category": "AI/ML",
+  "tags": ["AI", "LLM", "OpenAI", "Anthropic", "Claude", "GPT", "Machine Learning"],
+  "vendor": "MuleMind",
+  "version": "1.0.0",
+  "minMuleVersion": "4.6.0",
+  "icon": {
+    "small": "icon/icon-small.png",
+    "large": "icon/icon-large.png"
+  },
+  "colors": {
+    "primary": "#0066FF",
+    "secondary": "#00D9FF"
+  }
+}
