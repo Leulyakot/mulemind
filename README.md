@@ -10,17 +10,34 @@ MuleMind is a lightweight, modern connector that brings the power of Large Langu
 
 ## 📋 Prerequisites & Setup
 
-Before you begin, you need to configure access to MuleSoft's repositories:
+**Quick Start - No Credentials Required:**
 
-1. **Anypoint Platform Account** - Required for accessing MuleSoft dependencies
-2. **Maven 3.6+** with proper credentials configuration
-3. **Java 8 or 11** - MuleSoft 4.x runtime requirement
+```bash
+# Clone and build (works immediately)
+mvn clean package
+```
 
-**📖 See [MULESOFT_SETUP.md](MULESOFT_SETUP.md) for complete setup instructions including:**
+The default build uses JAR packaging and Maven Central only. **No MuleSoft credentials needed!**
+
+### Requirements
+
+1. **Java 8 or 11** - MuleSoft 4.x runtime requirement
+2. **Maven 3.6+** - Standard Maven installation
+
+### Advanced: Full Connector Mode
+
+For MuleSoft mule-extension packaging with enterprise features:
+
+```bash
+mvn clean package -P mule-connector
+```
+
+This requires Anypoint Platform credentials.
+
+**📖 See [MULESOFT_SETUP.md](MULESOFT_SETUP.md) for:**
+- Two build modes explained (JAR vs mule-extension)
 - Configuring Anypoint Platform credentials
-- Setting up Maven authentication
 - Troubleshooting common issues
-- Alternative configuration options
 
 ## ✨ Why MuleMind?
 

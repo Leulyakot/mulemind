@@ -2,9 +2,35 @@
 
 ## Overview
 
-This MuleSoft connector requires access to MuleSoft's Enterprise repositories, which are protected and require authentication.
+MuleMind Connector supports two build modes:
 
-## Prerequisites
+1. **JAR Mode (Default)** - No credentials required, uses Maven Central only
+   - ✅ Works out of the box
+   - ✅ No authentication needed
+   - ✅ Can be used as a library in Mule applications
+   - Build: `mvn clean package`
+
+2. **Full Connector Mode** - Requires MuleSoft Enterprise credentials
+   - Produces mule-extension package with full MuleSoft integration
+   - Requires Anypoint Platform credentials
+   - Enables advanced MuleSoft connector features
+   - Build: `mvn clean package -P mule-connector`
+
+## Quick Start (No Credentials Required)
+
+The default build works immediately without any setup:
+
+```bash
+mvn clean package
+```
+
+This creates a JAR file that can be used in your Mule applications.
+
+## Full Connector Setup (Requires Credentials)
+
+For the complete MuleSoft connector experience with mule-extension packaging:
+
+### Prerequisites
 
 1. **Anypoint Platform Account**: You need an active Anypoint Platform account
    - Sign up at: https://anypoint.mulesoft.com/login/signup
@@ -57,20 +83,23 @@ For development without enterprise features, you can use MuleSoft CE:
 
 ## Verify Setup
 
-1. **Test Maven can access repositories**:
-   ```bash
-   mvn dependency:resolve
-   ```
+### JAR Mode (No Credentials)
 
-2. **Build the project**:
-   ```bash
-   mvn clean compile
-   ```
+```bash
+# Build and package
+mvn clean package
 
-3. **Package the connector**:
-   ```bash
-   mvn clean package
-   ```
+# The output will be: target/mulemind-connector-1.0.0-SNAPSHOT.jar
+```
+
+### Full Connector Mode (With Credentials)
+
+```bash
+# Activate the mule-connector profile
+mvn clean package -P mule-connector
+
+# The output will be: target/mulemind-connector-1.0.0-SNAPSHOT-mule-plugin.jar
+```
 
 ## Troubleshooting
 

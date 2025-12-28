@@ -7,20 +7,16 @@
     <groupId>com.mulemind</groupId>
     <artifactId>mulemind-connector</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>mule-extension</packaging>
+    <packaging>jar</packaging>
 
     <name>MuleMind Connector</name>
     <description>Lightning-fast LLM integration for MuleSoft - Connect to OpenAI, Anthropic, Google, AWS Bedrock with minimal overhead</description>
 
     <!--
-    Parent POM provides essential MuleSoft connector configuration.
-    Requires MuleSoft repository access - see MULESOFT_SETUP.md for credentials configuration.
+    NOTE: This POM uses JAR packaging to enable builds without MuleSoft Enterprise credentials.
+    For full MuleSoft connector packaging (mule-extension), see MULESOFT_SETUP.md for
+    configuring Anypoint Platform credentials and using the mule-extensions-maven-plugin.
     -->
-    <parent>
-        <groupId>org.mule.extensions</groupId>
-        <artifactId>mule-modules-parent</artifactId>
-        <version>1.4.2</version>
-    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +25,7 @@
 
         <!-- MuleSoft versions -->
         <mule.version>4.6.0</mule.version>
+        <mule.api.version>1.6.0</mule.api.version>
         <mule.extensions.maven.plugin.version>1.4.2</mule.extensions.maven.plugin.version>
 
         <!-- Dependency versions -->
@@ -39,12 +36,21 @@
     </properties>
 
     <dependencies>
-        <!-- MuleSoft SDK -->
+        <!-- MuleSoft API (available in Maven Central) -->
+        <dependency>
+            <groupId>org.mule.runtime</groupId>
+            <artifactId>mule-api</artifactId>
+            <version>${mule.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MuleSoft Extensions API (for annotation-based connectors) -->
         <dependency>
             <groupId>org.mule.sdk</groupId>
             <artifactId>mule-sdk-api</artifactId>
             <version>0.7.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- HTTP Client -->
@@ -93,12 +99,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.mule.runtime.plugins</groupId>
-                <artifactId>mule-extensions-maven-plugin</artifactId>
-                <version>${mule.extensions.maven.plugin.version}</version>
-                <extensions>true</extensions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -107,53 +107,79 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Mule-Compatible>true</Mule-Compatible>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <!--
-    MuleSoft repositories require authentication.
-    Configure credentials in ~/.m2/settings.xml - see MULESOFT_SETUP.md
+    Build Profiles:
+    - Default (no profile): JAR packaging, uses Maven Central only, no credentials required
+    - mule-connector profile: mule-extension packaging, requires MuleSoft credentials
+
+    Usage:
+      Standard JAR: mvn clean package
+      Full Connector: mvn clean package -P mule-connector
+
+    See MULESOFT_SETUP.md for details
     -->
+    <profiles>
+        <!-- Full MuleSoft Connector Profile (requires credentials) -->
+        <profile>
+            <id>mule-connector</id>
+            <properties>
+                <project.packaging>mule-extension</project.packaging>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mule.runtime.plugins</groupId>
+                        <artifactId>mule-extensions-maven-plugin</artifactId>
+                        <version>${mule.extensions.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                    </plugin>
+                </plugins>
+            </build>
+            <repositories>
+                <repository>
+                    <id>mulesoft-releases</id>
+                    <name>MuleSoft Releases</name>
+                    <url>https://repository.mulesoft.org/releases/</url>
+                </repository>
+                <repository>
+                    <id>anypoint-exchange-v3</id>
+                    <name>Anypoint Exchange</name>
+                    <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>mulesoft-plugin-releases</id>
+                    <name>MuleSoft Plugin Releases</name>
+                    <url>https://repository.mulesoft.org/releases/</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
-            <id>anypoint-exchange-v3</id>
-            <name>Anypoint Exchange</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-        </repository>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
-        </repository>
-        <repository>
-            <id>mulesoft-snapshots</id>
-            <name>MuleSoft Snapshots Repository</name>
-            <url>https://repository.mulesoft.org/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>anypoint-exchange-v3</id>
-            <name>Anypoint Exchange</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>mulesoft-plugin-releases</id>
-            <name>MuleSoft Plugin Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>mulesoft-plugin-snapshots</id>
-            <name>MuleSoft Plugin Snapshots Repository</name>
-            <url>https://repository.mulesoft.org/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
