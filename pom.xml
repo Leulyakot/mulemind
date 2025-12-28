@@ -181,6 +181,11 @@
             <url>https://repository.mulesoft.org/releases/</url>
         </repository>
         <repository>
+            <id>mulesoft-ee-releases</id>
+            <name>MuleSoft Enterprise Releases</name>
+            <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+        </repository>
+        <repository>
             <id>central</id>
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2</url>
