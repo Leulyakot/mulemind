@@ -87,20 +87,6 @@ That's it! 🎉
 - **[Contributing Guide](CONTRIBUTING.md)** - Help make MuleMind better
 - **[Example Flows](examples/example-flows.xml)** - Real-world examples
 
-## 🎯 Why Not MAC Project?
-
-MuleMind is built for developers who want:
-
-| Need | MAC Project | MuleMind |
-|------|-------------|----------|
-| Simple LLM calls | ❌ Overkill | ✅ Perfect |
-| Lightweight | ❌ Heavy dependencies | ✅ Minimal footprint |
-| Modern Java | ⚠️ JDK 8/17 hybrid | ✅ Native Java 17+ |
-| Quick setup | ⚠️ Complex | ✅ Simple |
-| AI Agents | ✅ Yes | ⚠️ Future |
-
-**MuleMind complements MAC Project** - use MAC for complex AI workflows, MuleMind for straightforward LLM integration.
-
 ## 🚀 Example: Customer Support Bot
 
 ```xml
