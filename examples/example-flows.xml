@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:mulemind="http://www.mulesoft.org/schema/mule/llm"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/llm http://www.mulesoft.org/schema/mule/llm/current/mule-llm.xsd">
+
+    <!-- HTTP Listener Configuration -->
+    <http:listener-config name="HTTP_Listener_config">
+        <http:listener-connection host="0.0.0.0" port="8081"/>
+    </http:listener-config>
+
+    <!-- LLM Connector Configuration - OpenAI -->
+    <mulemind:config name="OpenAI_Config">
+        <mulemind:connection 
+            provider="OPENAI" 
+            apiKey="${openai.api.key}" 
+            model="gpt-4-turbo-preview"
+            temperature="0.7"
+            maxTokens="1000"/>
+    </mulemind:config>
+
+    <!-- LLM Connector Configuration - Anthropic -->
+    <mulemind:config name="Anthropic_Config">
+        <mulemind:connection 
+            provider="ANTHROPIC" 
+            apiKey="${anthropic.api.key}" 
+            model="claude-3-5-sonnet-20241022"
+            temperature="0.7"
+            maxTokens="1000"/>
+    </mulemind:config>
+
+    <!-- Flow 1: Simple Prompt -->
+    <flow name="simplePromptFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/simple"/>
+        
+        <mulemind:simple-prompt config-ref="OpenAI_Config" prompt="#[payload]"/>
+        
+        <set-payload value='#[{"response": payload}]'/>
+    </flow>
+
+    <!-- Flow 2: Chat with System Prompt -->
+    <flow name="chatWithSystemPromptFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/chat"/>
+        
+        <mulemind:chat-completion 
+            config-ref="OpenAI_Config" 
+            userMessage="#[payload.message]"
+            systemPrompt="You are a helpful assistant that provides concise answers."
+            temperature="0.5"
+            maxTokens="500"/>
+        
+        <set-payload value='#[{"response": payload}]'/>
+    </flow>
+
+    <!-- Flow 3: Customer Support Bot -->
+    <flow name="customerSupportFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/support"/>
+        
+        <set-variable variableName="customerQuery" value="#[payload.query]"/>
+        <set-variable variableName="customerContext" value="#[payload.context default '']"/>
+        
+        <mulemind:chat-completion 
+            config-ref="Anthropic_Config" 
+            userMessage="#[vars.customerQuery]"
+            systemPrompt="#['You are a customer support agent. Context: ' ++ vars.customerContext]"
+            temperature="0.3"/>
+        
+        <set-payload value='#[{
+            "query": vars.customerQuery,
+            "response": payload,
+            "timestamp": now()
+        }]'/>
+    </flow>
+
+    <!-- Flow 4: Content Generator -->
+    <flow name="contentGeneratorFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/generate"/>
+        
+        <set-variable variableName="topic" value="#[payload.topic]"/>
+        <set-variable variableName="style" value="#[payload.style default 'professional']"/>
+        
+        <mulemind:chat-completion 
+            config-ref="OpenAI_Config" 
+            userMessage="#['Write a blog post about: ' ++ vars.topic]"
+            systemPrompt="#['You are a ' ++ vars.style ++ ' content writer.']"
+            temperature="0.8"
+            maxTokens="1500"/>
+        
+        <set-payload value='#[{
+            "topic": vars.topic,
+            "style": vars.style,
+            "content": payload
+        }]'/>
+    </flow>
+
+    <!-- Flow 5: Advanced Chat with History -->
+    <flow name="advancedChatFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/conversation"/>
+        
+        <mulemind:advanced-chat config-ref="OpenAI_Config">
+            <mulemind:messages>#[
+                [
+                    {role: "system", content: "You are a helpful AI assistant."}
+                ] ++ 
+                (payload.history default []) ++ 
+                [
+                    {role: "user", content: payload.message}
+                ]
+            ]</mulemind:messages>
+        </mulemind:advanced-chat>
+        
+        <set-payload value='#[{
+            "message": payload.content,
+            "usage": {
+                "promptTokens": payload.usage.promptTokens,
+                "completionTokens": payload.usage.completionTokens,
+                "totalTokens": payload.usage.totalTokens
+            }
+        }]'/>
+    </flow>
+
+    <!-- Flow 6: Test Connection -->
+    <flow name="testConnectionFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/test"/>
+        
+        <mulemind:test-connection config-ref="OpenAI_Config"/>
+        
+        <set-payload value='#[{"status": payload}]'/>
+    </flow>
+
+    <!-- Flow 7: Multi-Provider Comparison -->
+    <flow name="compareProvidersFlow">
+        <http:listener config-ref="HTTP_Listener_config" path="/compare"/>
+        
+        <set-variable variableName="prompt" value="#[payload.prompt]"/>
+        
+        <!-- Get response from OpenAI -->
+        <mulemind:simple-prompt config-ref="OpenAI_Config" prompt="#[vars.prompt]"/>
+        <set-variable variableName="openaiResponse" value="#[payload]"/>
+        
+        <!-- Get response from Anthropic -->
+        <mulemind:simple-prompt config-ref="Anthropic_Config" prompt="#[vars.prompt]"/>
+        <set-variable variableName="anthropicResponse" value="#[payload]"/>
+        
+        <set-payload value='#[{
+            "prompt": vars.prompt,
+            "responses": {
+                "openai": vars.openaiResponse,
+                "anthropic": vars.anthropicResponse
+            }
+        }]'/>
+    </flow>
+
+    <!-- Error Handler -->
+    <error-handler name="globalErrorHandler">
+        <on-error-continue type="ANY">
+            <set-payload value='#[{
+                "error": error.description,
+                "type": error.errorType.identifier,
+                "timestamp": now()
+            }]'/>
+            <set-variable variableName="httpStatus" value="500"/>
+        </on-error-continue>
+    </error-handler>
+
+</mule>

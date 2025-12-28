@@ -1,0 +1,21 @@
+
+  __  __       _      __  __ _           _ 
+ |  \/  |_   _| | ___|  \/  (_)_ __   __| |
+ | |\/| | | | | |/ _ \ |\/| | | '_ \ / _` |
+ | |  | | |_| | |  __/ |  | | | | | | (_| |
+ |_|  |_|\__,_|_|\___|_|  |_|_|_| |_|\__,_|
+                                            
+ Lightning-fast LLM integration for MuleSoft
+ 
+ Version: 1.0.0
+ Java: 17+
+ License: MIT
+ 
+ Supported Providers:
+ ✓ OpenAI (GPT-4, GPT-3.5)
+ ✓ Anthropic (Claude 3.5 Sonnet)
+ ⊙ Google Gemini (Coming Soon)
+ ⊙ AWS Bedrock (Coming Soon)
+ ⊙ Azure OpenAI (Coming Soon)
+ 
+ Think faster. Integrate smarter.
