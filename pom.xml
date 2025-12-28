@@ -36,7 +36,7 @@
     </properties>
 
     <dependencies>
-        <!-- MuleSoft API (available in Maven Central) -->
+        <!-- MuleSoft API (from MuleSoft repository) -->
         <dependency>
             <groupId>org.mule.runtime</groupId>
             <artifactId>mule-api</artifactId>
@@ -179,6 +179,16 @@
             <id>central</id>
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases</name>
+            <url>https://repository.mulesoft.org/releases/</url>
+        </repository>
+        <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Anypoint Exchange</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
         </repository>
     </repositories>
 
