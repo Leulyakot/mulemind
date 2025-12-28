@@ -2,18 +2,32 @@
 
 **Lightning-fast LLM integration for MuleSoft**
 
-[![Java 17+](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/)
+[![Java 8+](https://img.shields.io/badge/Java-8%2B-blue.svg)](https://www.oracle.com/java/)
 [![MuleSoft 4.6+](https://img.shields.io/badge/MuleSoft-4.6%2B-blue.svg)](https://www.mulesoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 MuleMind is a lightweight, modern connector that brings the power of Large Language Models directly into your MuleSoft applications. Built for speed and simplicity, it lets you integrate AI without the complexity.
+
+## 📋 Prerequisites & Setup
+
+Before you begin, you need to configure access to MuleSoft's repositories:
+
+1. **Anypoint Platform Account** - Required for accessing MuleSoft dependencies
+2. **Maven 3.6+** with proper credentials configuration
+3. **Java 8 or 11** - MuleSoft 4.x runtime requirement
+
+**📖 See [MULESOFT_SETUP.md](MULESOFT_SETUP.md) for complete setup instructions including:**
+- Configuring Anypoint Platform credentials
+- Setting up Maven authentication
+- Troubleshooting common issues
+- Alternative configuration options
 
 ## ✨ Why MuleMind?
 
 - **🚀 Blazing Fast** - Direct API integration, no heavyweight frameworks
 - **🎯 Simple** - Intuitive operations that just work
 - **🔌 Multi-Provider** - OpenAI, Anthropic, Google, AWS Bedrock, Azure
-- **⚡ Modern** - Built with Java 17+, embracing modern patterns
+- **⚡ Modern** - Built with Java 8+, MuleSoft SDK best practices
 - **📦 Lightweight** - Minimal dependencies, maximum performance
 - **🛠️ Extensible** - Easy to customize and extend
 
@@ -107,7 +121,7 @@ That's it! 🎉
 
 ```
 MuleMind Connector
-├── Lightweight Core (Java 17+)
+├── Lightweight Core (Java 8+)
 ├── Provider Abstraction Layer
 ├── Direct API Integration
 └── Minimal Dependencies
